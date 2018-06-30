@@ -41,6 +41,7 @@
 
 extern crate parking_lot;
 extern crate owning_ref;
+extern crate fnv;
 
 #[cfg(test)]
 mod tests;
@@ -51,6 +52,7 @@ use std::collections::hash_map;
 use std::hash::{Hash, Hasher, BuildHasher};
 use std::sync::atomic::{self, AtomicUsize};
 use std::{mem, ops, cmp, fmt, iter};
+use fnv::FnvBuildHasher;
 
 /// The atomic ordering used throughout the code.
 const ORDERING: atomic::Ordering = atomic::Ordering::Relaxed;
@@ -173,7 +175,7 @@ struct Table<K, V> {
     ///
     /// This randomly picks a hash function from some family of functions in libstd. This
     /// effectively eliminates the issue of hash flooding.
-    hash_builder: hash_map::RandomState,
+    hash_builder: FnvBuildHasher,
     /// The bucket array.
     ///
     /// This vector stores the buckets. The order in which they're stored is far from arbitrary: A
@@ -196,7 +198,7 @@ impl<K, V> Table<K, V> {
 
         Table {
             // Generate a hash function.
-            hash_builder: hash_map::RandomState::new(),
+            hash_builder: FnvBuildHasher::default(),
             buckets: vec,
         }
     }

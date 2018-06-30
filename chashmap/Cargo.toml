@@ -12,3 +12,4 @@ exclude = ["target", "Cargo.lock"]
 [dependencies]
 parking_lot = "0.4"
 owning_ref = "0.3"
+fnv = "*"
